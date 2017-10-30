@@ -2,7 +2,7 @@ node {
    echo 'Hello World'
    
     stage('checkout') {
-	 git url: 'https://github.com/mailtorajit/TestFramework.git'
+	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
     echo 'inside checkout'
 	
