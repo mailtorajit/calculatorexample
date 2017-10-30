@@ -46,15 +46,16 @@ node {
         }
         echo "================================================================================================="
     }
-    step([$class: 'JacocoPublisher',
-      execPattern:'**/target/coverage-reports/*.exec',
-      classPattern: '**/classes',
-      sourcePattern: '**/src/main/java'])
-      
+    
 	stage('test execute'){
 		echo 'inside test'
 		bat 'mvn test -Dmaven.compile.skip=true'
 	}
+	step([$class: 'JacocoPublisher',
+      execPattern:'**/target/coverage-reports/*.exec',
+      classPattern: '**/classes',
+      sourcePattern: '**/src/main/java'])
+      
    	stage('deploy') {
     	// some block
     	echo 'inside deploy'
