@@ -47,7 +47,7 @@ node {
         echo "================================================================================================="
     }
     step([$class: 'JacocoPublisher',
-      execPattern:'**/**.exec',
+      execPattern:'**/target/coverage-reports/*.exec',
       classPattern: '**/classes',
       sourcePattern: '**/src/main/java'])
       
