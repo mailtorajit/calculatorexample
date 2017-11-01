@@ -68,7 +68,7 @@ node {
 	}
 
 	stage('notify'){
-	 notifySuccessful(currentBuild.result);
+	 notifyBuild(currentBuild.result);
 	}
 	
 	}
