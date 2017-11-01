@@ -8,15 +8,20 @@ node {
 	
 	}
 	stage('clean project'){
+		echo "=============================cleaning the project======================================================="
 		echo "PATH = ${PATH}"
     	//echo "M2_HOME = ${M2_HOME}"
 		bat 'mvn clean'
+		echo "================================================================================================="
 	}
 	stage('compile'){
+		echo "==============================compiling the project================================================="
 		echo "PATH = ${PATH}"
     	//echo "M2_HOME = ${M2_HOME}"
 		bat 'mvn compile'
+		echo "================================================================================================="
 	}
+
 	stage('SonarQube analysis') {
 		echo "================================================================================================="
        	def scannerHome = tool 'My SonarQube Server';
@@ -60,6 +65,13 @@ node {
     	// some block
     	echo 'inside deploy'
     	bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+	}
+
+	stage('notify'){
+	  step([$class: 'Mailer',
+      notifyEveryUnstableBuild: true,
+      recipients: emailextrecipients([[$class: 'DevelopersRecipientProvider'],
+                                      [$class: 'RequesterRecipientProvider']])])
 	}
 
 }

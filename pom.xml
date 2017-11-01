@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.stokito</groupId>
-    <artifactId>calculator-unit-test-example-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>Calculator unit test example in Java</name>
-    <description>Simple jUnit test example</description>
+	<artifactId>calculator-unit-test-example-java</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Calculator unit test example in Java</name>
+	<description>Simple jUnit test example</description>
 	<licenses>
 		<license>
 			<name>Apache License version 2.0</name>
@@ -18,22 +18,21 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-classpath-plugin.version>1.9</maven-classpath-plugin.version>
 		<commons-lang.version>2.6</commons-lang.version>
-		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
 		<sonar.language>java</sonar.language>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
-          <groupId>org.sonarsource.java</groupId>
-          <artifactId>sonar-jacoco-listeners</artifactId>
-          <version>3.8</version>
-          <scope>test</scope>
-        </dependency>
+			<groupId>org.sonarsource.java</groupId>
+			<artifactId>sonar-jacoco-listeners</artifactId>
+			<version>3.8</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-</dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -104,7 +103,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				
+
 				<configuration>
 					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
 					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
@@ -126,19 +125,19 @@
 				</executions>
 			</plugin>
 			<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <!-- Minimal supported version is 2.4 -->
-            <version>2.13</version>
-            <configuration>
-              <properties>
-                <property>
-                  <name>listener</name>
-                  <value>org.sonar.java.jacoco.JUnitListener</value>
-                </property>
-              </properties>
-            </configuration>
-          </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<!-- Minimal supported version is 2.4 -->
+				<version>2.13</version>
+				<configuration>
+					<properties>
+						<property>
+							<name>listener</name>
+							<value>org.sonar.java.jacoco.JUnitListener</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<distributionManagement>
@@ -147,37 +146,37 @@
 			<url>http://localhost:8081/repository/nexus-snapshots/</url>
 		</repository>
 	</distributionManagement>
-	
-	<profiles>
-    <profile>
-      <id>coverage-per-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <!-- Minimal supported version is 2.4 -->
-            <version>2.13</version>
-            <configuration>
-              <properties>
-                <property>
-                  <name>listener</name>
-                  <value>org.sonar.java.jacoco.JUnitListener</value>
-                </property>
-              </properties>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
 
-      <dependencies>
-        <dependency>
-          <groupId>org.sonarsource.java</groupId>
-          <artifactId>sonar-jacoco-listeners</artifactId>
-          <version>3.8</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<id>coverage-per-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<!-- Minimal supported version is 2.4 -->
+						<version>2.13</version>
+						<configuration>
+							<properties>
+								<property>
+									<name>listener</name>
+									<value>org.sonar.java.jacoco.JUnitListener</value>
+								</property>
+							</properties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.sonarsource.java</groupId>
+					<artifactId>sonar-jacoco-listeners</artifactId>
+					<version>3.8</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>
