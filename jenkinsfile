@@ -1,11 +1,12 @@
 node {
-   echo 'Hello World'
+	echo "===========================checking out the code==================================================="
+	echo 'Checking out the code'
    
     stage('checkout') {
 	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
-    echo 'inside checkout'
-	
+	echo 'checkedout the code'
+	echo "================================================================================================="
 	}
 	stage('clean project'){
 		echo "=============================cleaning the project======================================================="
@@ -21,12 +22,17 @@ node {
 		bat 'mvn compile'
 		echo "================================================================================================="
 	}
-
+	
+	stage('test execute'){
+		echo "==============================Exceuting the tests================================================="
+		echo 'inside test'
+		bat 'mvn test -Dmaven.compile.skip=true'
+		echo "================================================================================================="
+	}
+	
 	stage('SonarQube analysis') {
 		echo "================================================================================================="
        	def scannerHome = tool 'My SonarQube Server';
-       	echo "Scanner home is"
-		echo scannerHome
 		//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
      	withSonarQubeEnv('SonarQube Scanner') {
         bat "${scannerHome}/bin/sonar-scanner.bat"
@@ -35,10 +41,9 @@ node {
 	}
 	
 	sleep(10)
-	
 	 stage("SonarQube Quality Gate") {
 	 	echo "=================================================================================================" 
-        timeout(time: 30, unit: 'SECONDS') { 
+        timeout(time: 30, unit: 'MINUTES') { 
            def qg = waitForQualityGate() 
            if (qg.status != 'OK') {
              error "Pipeline aborted due to quality gate failure: ${qg.status}"
@@ -47,57 +52,19 @@ node {
         echo "================================================================================================="
     }
     
-	stage('test execute'){
-		echo 'inside test'
-		bat 'mvn test -Dmaven.compile.skip=true'
-	}
-	stage('Jacoco publisher'){
-	   step([$class: 'JacocoPublisher',
-      execPattern:'**/target/coverage-reports/*.exec',
-      classPattern: '**/classes',
-      sourcePattern: '**/src/main/java'])
-	}
-   	stage('deploy') {
-    	// some block
-    	echo 'inside deploy'
-    	bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
-	}
-
-	stage('notify'){
-	 notifyBuild(currentBuild.result);
+    stage('publish test results'){
+    	echo "===========================Publishing the results============================================="
+	  	step([$class: 'JacocoPublisher',
+      	execPattern:'**/target/coverage-reports/*.exec',
+      	classPattern: '**/classes',
+      	sourcePattern: '**/src/main/java'])
+      	echo "================================================================================================="
 	}
 	
+   	stage('deploy') {
+    	echo "=========================Deploying the project========================================================"
+    	bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+    	echo "================================================================================================="
 	}
-	def notifyBuild(String buildStatus = 'STARTED') {
-   // build status of null means successful
-   buildStatus =  buildStatus ?: 'SUCCESSFUL'
- 
-   // Default values
-   def colorName = 'RED'
-   def colorCode = '#FF0000'
-   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-   def summary = "${subject} (${env.BUILD_URL})"
-   def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-     <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
- 
-   // Override default values based on build status
-   if (buildStatus == 'STARTED') {
-     color = 'YELLOW'
-     colorCode = '#FFFF00'
-   } else if (buildStatus == 'SUCCESSFUL') {
-     color = 'GREEN'
-     colorCode = '#00FF00'
-   } else {
-     color = 'RED'
-     colorCode = '#FF0000'
-   }
- 
-   emailext (
-       subject: subject,
-       body: details,
-       recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-       replyTo: '$DEFAULT_REPLYTO',
-       to: '$DEFAULT_RECIPIENTS'
-     )
- }
 
+}
