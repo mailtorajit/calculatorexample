@@ -1,5 +1,6 @@
 node {
 	echo "===========================checking out the code==================================================="
+	bat 'ruby -v'
 	echo 'Checking out the code'
    
     stage('checkout') {
