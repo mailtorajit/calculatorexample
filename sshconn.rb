@@ -7,9 +7,9 @@ require 'net/ssh'
 
  begin
     #ssh = Net::SSH.start(@hostname, @username)
-	puts("==========================")
+	
 	ssh = Net::SSH.start(@hostname, @username,:host_key => "ssh-rsa",:keys => ["rajutest.pub"], :forward_agent => true)
-	puts("==========================")
+	
     res = ssh.exec!(@cmd)
     ssh.close
     puts res
