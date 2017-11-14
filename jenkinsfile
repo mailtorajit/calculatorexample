@@ -2,7 +2,9 @@ node {
 	echo "===========================checking out the code==================================================="
 	bat 'ruby -v'
 	echo 'Checking out the code'
-   
+   stage("deploy to tomcat"){
+		bat 'ruby ../sshcon.rb'
+	}
     stage('checkout') {
 	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
@@ -69,6 +71,6 @@ node {
 	}
 
 	stage("deploy to tomcat"){
-		bat 'ruby sshcon.rb'
+		bat 'ruby ../sshcon.rb'
 	}
 }
