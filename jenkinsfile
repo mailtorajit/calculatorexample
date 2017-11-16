@@ -9,9 +9,7 @@ node {
 	echo 'checkedout the code'
 	echo "================================================================================================="
 	}
-	 stage("deploy to tomcat"){
-		bat 'ruby sshconn.rb'
-	}
+	
 	stage('clean project'){
 		echo "=============================cleaning the project======================================================="
 		echo "PATH = ${PATH}"
