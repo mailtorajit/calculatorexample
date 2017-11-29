@@ -56,7 +56,7 @@ node {
 		//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
      	withSonarQubeEnv('SonarQube Scanner') {
      	if(isUnix()){
-    		sh 'mvn clean package sonar:sonar'
+    		sh "${scannerHome}/bin/sonar-scanner"
     	}
     	else{
 			bat "${scannerHome}/bin/sonar-scanner.bat"
