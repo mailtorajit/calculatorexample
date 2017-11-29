@@ -1,8 +1,9 @@
 node {
 	echo "===========================checking out the code==================================================="
-	bat 'ruby -v'
+	echo env.OS
+	def os=env.OS
 	echo 'Checking out the code'
-  
+   
     stage('checkout') {
 	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
@@ -14,7 +15,13 @@ node {
 		echo "=============================cleaning the project======================================================="
 		echo "PATH = ${PATH}"
     	//echo "M2_HOME = ${M2_HOME}"
-		bat 'mvn clean'
+    	if(os.contains('Windows'){
+			bat 'mvn clean'
+			}
+		else{
+			sh 'mvn clean'
+		}
+			
 		echo "================================================================================================="
 	}
 	stage('compile'){
