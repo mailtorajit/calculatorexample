@@ -1,7 +1,7 @@
 node {
 	echo "===========================checking out the code==================================================="
-	echo System.propertied['os.name']
-	
+	echo isUnix()
+	echo isWindows()
 	echo 'Checking out the code'
    
     stage('checkout') {
