@@ -28,14 +28,25 @@ node {
 		echo "==============================compiling the project================================================="
 		echo "PATH = ${PATH}"
     	//echo "M2_HOME = ${M2_HOME}"
-		bat 'mvn compile'
+    	if(isUnix()){
+    		sh 'mvn compile'
+    	}
+    	else{
+			bat 'mvn compile'
+		}
 		echo "================================================================================================="
 	}
 	
 	stage('test execute'){
 		echo "==============================Exceuting the tests================================================="
 		echo 'inside test'
-		bat 'mvn test -Dmaven.compile.skip=true'
+		if(isUnix()){
+    		sh 'mvn test -Dmaven.compile.skip=true'
+    	}
+    	else{
+			bat 'mvn test -Dmaven.compile.skip=true'
+		}
+		
 		echo "================================================================================================="
 	}
 	
@@ -44,7 +55,13 @@ node {
        	def scannerHome = tool 'My SonarQube Server';
 		//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
      	withSonarQubeEnv('SonarQube Scanner') {
-        bat "${scannerHome}/bin/sonar-scanner.bat"
+     	if(isUnix()){
+    		sh "${scannerHome}/bin/sonar-scanner.bat"
+    	}
+    	else{
+			bat "${scannerHome}/bin/sonar-scanner.bat"
+		}
+        
         echo "=================================================================================================" 
     	}
 	}
@@ -72,12 +89,24 @@ node {
 	
    	stage('deploy') {
     	echo "=========================Deploying the project========================================================"
-    	bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+    	if(isUnix()){
+    		sh 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+    	}
+    	else{
+			bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+		}
+    	
     	echo "================================================================================================="
 	}
 
 	stage("deploy to tomcat"){
-		bat 'ruby sshconn.rb'
+		if(isUnix()){
+    		sh 'ruby sshconn.rb'
+    	}
+    	else{
+			bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
+		}
+		
 	}
 	
 	stage('notify'){
