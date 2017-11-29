@@ -1,6 +1,6 @@
 node {
 	echo "===========================checking out the code==================================================="
-	echo "isWindows"
+	echo System.propertied['os.name']
 	
 	echo 'Checking out the code'
    
