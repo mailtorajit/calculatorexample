@@ -1,7 +1,7 @@
 node {
 	echo "===========================checking out the code==================================================="
-	echo ${env.OS}
-	def os=${env.OS}
+	echo "isWindows"
+	
 	echo 'Checking out the code'
    
     stage('checkout') {
