@@ -14,7 +14,7 @@ node {
 		echo "=============================cleaning the project======================================================="
 		echo "PATH = ${PATH}"
     	//echo "M2_HOME = ${M2_HOME}"
-    	if(isWindows){
+    	if(isWindows()){
 			bat 'mvn clean'
 			}
 		else{
