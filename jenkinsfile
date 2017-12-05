@@ -17,7 +17,7 @@ node {
 	 def Revision_Number=FileContents.text.substring(0,7)
 	 Version_Number=properties.Major_Version+'.'+properties.Minor_Version+'.'+Revision_Number+'.'+env.BUILD_NUMBER
 	 echo "$Version_Number"
-	 executeCommand('mvn -e versions:set -DnewVersion=$Version_Number')
+	 executeCommand("mvn -e versions:set -DnewVersion=$Version_Number")
 		//if(isUnix()){
     		//sh 'mvn -e versions:set -DnewVersion=$Version_Number'
     	//}
