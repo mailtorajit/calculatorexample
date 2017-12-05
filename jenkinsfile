@@ -1,7 +1,6 @@
 node {
-echo '${env.mavenTest}'
-echo '${env}'
-echo '${env.qualityGateCheck}'
+	echo $mavenCompile
+	echo $mavenDeploy
     stage('checkout') {
     	echo "===========================checking out the code==================================================="
 	 	git url: 'https://github.com/mailtorajit/calculatorexample.git'
@@ -29,7 +28,7 @@ echo '${env.qualityGateCheck}'
 	}
 	stage('compile'){
 		echo "==============================compiling the project================================================="
-		if(env.mavenCompile){
+		if($mavenCompile){
 			executeCommand("mvn compile")    
 		}
 		
@@ -38,14 +37,14 @@ echo '${env.qualityGateCheck}'
 	
 	stage('test execute'){
 		echo "==============================Exceuting the tests================================================="
-		if(env.mavenTest){
+		if($mavenTest){
 			executeCommand("mvn test -Dmaven.compile.skip=true")		    
 		}
 
 		echo "================================================================================================="
 	}
 	
-	if(env.qualityGateCheck){
+	if($qualityGateCheck){
 	    stage('SonarQube analysis') {
 		echo "================================================================================================="
        	def scannerHome = tool 'My SonarQube Server';
@@ -89,7 +88,7 @@ echo '${env.qualityGateCheck}'
    	stage('Upload Artifactory') {
     	echo "=========================Deploying the project========================================================"
     	//executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
- 		if(env.mavenDeploy){
+ 		if($mavenDeploy){
  			executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
 	  		echo "$Version_Number"
 	  		JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
@@ -103,7 +102,7 @@ echo '${env.qualityGateCheck}'
 	}
 
 	stage("Deploy the project to tomcat"){
-		if($env.mavenDeploy){
+		if($mavenDeploy){
 	  	 	executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
 		}
 		
