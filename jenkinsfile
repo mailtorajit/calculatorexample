@@ -26,17 +26,24 @@ node {
 	}
 	stage('compile'){
 		echo "==============================compiling the project================================================="
-		executeCommand("mvn compile")
+		if(mavenCompile){
+			executeCommand("mvn compile")    
+		}
+		
 		echo "================================================================================================="
 	}
 	
 	stage('test execute'){
 		echo "==============================Exceuting the tests================================================="
-		executeCommand("mvn test -Dmaven.compile.skip=true")
+		if(mavenTest){
+			executeCommand("mvn test -Dmaven.compile.skip=true")		    
+		}
+
 		echo "================================================================================================="
 	}
 	
-	stage('SonarQube analysis') {
+	if(qualityGateCheck){
+	    stage('SonarQube analysis') {
 		echo "================================================================================================="
        	def scannerHome = tool 'My SonarQube Server';
 		//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
@@ -72,24 +79,31 @@ node {
       	sourcePattern: '**/src/main/java'])
       	echo "================================================================================================="
 	}
+	}
+
 	
-   	stage('deploy') {
+	
+   	stage('Upload Artifactory') {
     	echo "=========================Deploying the project========================================================"
     	//executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
- 
-	  executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
-	  echo "$Version_Number"
-	  JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
-	  FilePath1="target/"+JarFile
+ 		if(mavenDeploy){
+ 			executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
+	  		echo "$Version_Number"
+	  		JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
+	  		FilePath1="target/"+JarFile
 	  
-	  echo "$FilePath1"
-      executeCommand("curl -v -u $properties.NexUser:$properties.NexPass --upload-file $FilePath1 $properties.NexusRepo$Version_Number/$JarFile")
+	  		echo "$FilePath1"
+      		executeCommand("curl -v -u $properties.NexUser:$nexusPass --upload-file $FilePath1 $properties.NexusRepo$Version_Number/$JarFile")
+ 		}
 	  echo "#####################################Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
       echo "================================================================================================="
 	}
 
-	stage("deploy to tomcat"){
-		executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
+	stage("Deploy the project to tomcat"){
+		if(mavenDeploy){
+	  	 	executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
+		}
+		
 	}
 	
 	stage('notify'){
