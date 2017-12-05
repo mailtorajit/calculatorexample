@@ -1,17 +1,18 @@
 node {
-  stage('Reading the variables from the file')
-    {   echo "${env.WORKSPACE}"
-        properties = new Properties()
-        File propertiesFile = new File("${env.WORKSPACE}"+"/jenkins.properties")
-        properties.load(propertiesFile.newDataInputStream())
-		echo 'Loaded data from the file'
-    }
+  
 	echo "===========================checking out the code==================================================="
 	echo 'Checking out the code'   
     stage('checkout') {
 	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
 	echo 'checkedout the code'
+	}
+	stage('Reading the variables from the file')
+    {   echo "${env.WORKSPACE}"
+        properties = new Properties()
+        File propertiesFile = new File("${env.WORKSPACE}"+"/jenkins.properties")
+        properties.load(propertiesFile.newDataInputStream())
+		echo 'Loaded data from the file'
 	 File FileContents = new File("${env.WORKSPACE}"+"/.git/refs/remotes/origin/master")
 	 def Revision_Number=FileContents.text.substring(0,7)
 	 Version_Number=properties.Major_Version+'.'+properties.Minor_Version+'.'+Revision_Number+'.'+env.BUILD_NUMBER
