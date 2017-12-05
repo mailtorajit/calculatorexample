@@ -10,7 +10,7 @@ require 'net/scp'
 @cmd = "ls -al"
 @password = "oddTulip@123"
 begin
-  system("wget -O ~/Downloads/calculator-unit-test-example-java-1.0-20171030.100532-2.jar http://10.71.160.26:8081/repository/nexus-snapshots/com/github/stokito/calculator-unit-test-example-java/1.0-SNAPSHOT/calculator-unit-test-example-java-1.0-20171030.100532-1.jar")
+  system("wget -O ~/Downloads/"+ARGV[0]+" "+ARGV[1])
   Net::SCP.start("35.188.131.223", "rajsurabhi") do |scp|
     # upload a file to a remote server
     scp.upload! "/home/rajsurabhi/Downloads/calculator-unit-test-example-java-1.0-20171030.100532-2.jar", "/home/rajsurabhi"
