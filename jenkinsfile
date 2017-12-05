@@ -132,8 +132,8 @@ node {
 
 def notifySuccessful() {
    emailext (
-       subject: "Project: ${PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${BUILD_STATUS}!",
-       body: """<p>Project: ${PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${BUILD_STATUS}!</p>
+       subject: "Project: ${env.PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${env.BUILD_STATUS}!",
+       body: """<p>Project: ${env.PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${env.BUILD_STATUS}!</p>
          <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
        to: "rajkumar.surabhi640@gmail.com", attachLog: true
      )
