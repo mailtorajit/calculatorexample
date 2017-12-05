@@ -1,8 +1,8 @@
 node {
   stage('Reading the variables from the file')
-    {   echo '${env.WORKSPACE}'
+    {   echo "${env.WORKSPACE}"
         properties = new Properties()
-        File propertiesFile = new File('${env.WORKSPACE}'+'./jenkins.properties')
+        File propertiesFile = new File("${env.WORKSPACE}"+"./jenkins.properties")
         properties.load(propertiesFile.newDataInputStream())
 		echo 'Loaded data from the file'
     }
