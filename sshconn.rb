@@ -10,10 +10,10 @@ require 'net/scp'
 @cmd = "ls -al"
 @password = "oddTulip@123"
 begin
-  system("wget -O ~/Downloads/"+ARGV[0]+" "+ARGV[1])
+  system("wget -O /home/rajsurabhi/Downloads/"+ARGV[0]+" "+ARGV[1])
   Net::SCP.start("35.188.131.223", "rajsurabhi") do |scp|
     # upload a file to a remote server
-    scp.upload! "/home/rajsurabhi/Downloads/calculator-unit-test-example-java-1.0-20171030.100532-2.jar", "/home/rajsurabhi"
+    scp.upload! "/home/rajsurabhi/Downloads/"+ARGV[0], "/home/rajsurabhi"
   end
   ssh = Net::SSH.start(@hostname, @username,:host_key=>"ssh-rsa",:keys => [ "~/.ssh/rajutest.pub"], :forward_agent=>true)
   res = ssh.exec!(@cmd)
