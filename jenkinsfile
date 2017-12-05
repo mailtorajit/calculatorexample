@@ -83,7 +83,7 @@ node {
 	  FilePath1="target/"+JarFile
 	  
 	  echo "$FilePath1"
-      sh "curl -v -u $properties.NexUser:$properties.NexPass --upload-file $FilePath1 $properties.NexusRepo/$Version_Number/$JarFile"
+      bat "curl -v -u $properties.NexUser:$properties.NexPass --upload-file $FilePath1 $properties.NexusRepo/$Version_Number/$JarFile"
 	  echo "#####################################Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
       echo "================================================================================================="
 	}
