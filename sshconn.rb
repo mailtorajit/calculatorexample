@@ -12,7 +12,7 @@ require 'net/scp'
 begin
   puts ARGV[0]
   puts ARGV[1]
-  file = "wget -O "+ARGV[0]+" "+ARGV[1]
+  file = "wget -O #{ARGV[0]} #{ARGV[1]}"
   puts file
   system(file)
   Net::SCP.start(@hostname, "rajsurabhi") do |scp|
@@ -25,6 +25,7 @@ begin
   ssh.exec!("sudo service tomcat8 restart")
   ssh.close
   puts res
+  system("rm #{ARGV[0]}")
 rescue Exception => e
   puts e.message
 end
