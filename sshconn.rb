@@ -10,7 +10,11 @@ require 'net/scp'
 @cmd = "ls -al"
 @password = "oddTulip@123"
 begin
-  system("wget -O /home/rajsurabhi/Downloads/"+ARGV[0]+" "+ARGV[1])
+  puts ARGV[0]
+  puts ARGV[1]
+  file = "wget -O /home/rajsurabhi/Downloads/"+ARGV[0]+" "+ARGV[1]
+  puts file
+  system(file)
   Net::SCP.start("35.188.131.223", "rajsurabhi") do |scp|
     # upload a file to a remote server
     scp.upload! "/home/rajsurabhi/Downloads/"+ARGV[0], "/home/rajsurabhi"
