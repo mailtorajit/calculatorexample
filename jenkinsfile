@@ -77,7 +77,7 @@ node {
     	echo "=========================Deploying the project========================================================"
     	//executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
     	  //This will deploy the artifact to the Nexus Reposiory.
-	 
+	  executeCommand("mvn package")
 	  echo "$Version_Number"
 	  JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
 	  FilePath1="target/"+JarFile
@@ -89,7 +89,7 @@ node {
 	}
 
 	stage("deploy to tomcat"){
-		executeCommand("ruby sshconn.rb")
+		//executeCommand("ruby sshconn.rb")
 	}
 	
 	stage('notify'){
