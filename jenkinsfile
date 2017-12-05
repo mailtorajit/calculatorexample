@@ -1,6 +1,6 @@
 node {
-	echo params
-	echo params.mavenDeploy
+	print params
+	print params.mavenDeploy
     stage('checkout') {
     	echo "===========================checking out the code==================================================="
 	 	git url: 'https://github.com/mailtorajit/calculatorexample.git'
@@ -28,7 +28,7 @@ node {
 	}
 	stage('compile'){
 		echo "==============================compiling the project================================================="
-		if($mavenCompile){
+		if(params.mavenCompile){
 			executeCommand("mvn compile")    
 		}
 		
@@ -37,14 +37,14 @@ node {
 	
 	stage('test execute'){
 		echo "==============================Exceuting the tests================================================="
-		if($mavenTest){
+		if(params.mavenTest){
 			executeCommand("mvn test -Dmaven.compile.skip=true")		    
 		}
 
 		echo "================================================================================================="
 	}
 	
-	if($qualityGateCheck){
+	if(params.qualityGateCheck){
 	    stage('SonarQube analysis') {
 		echo "================================================================================================="
        	def scannerHome = tool 'My SonarQube Server';
@@ -88,7 +88,7 @@ node {
    	stage('Upload Artifactory') {
     	echo "=========================Deploying the project========================================================"
     	//executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
- 		if($mavenDeploy){
+ 		if(params.mavenDeploy){
  			executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
 	  		echo "$Version_Number"
 	  		JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
@@ -102,7 +102,7 @@ node {
 	}
 
 	stage("Deploy the project to tomcat"){
-		if($mavenDeploy){
+		if(params.mavenDeploy){
 	  	 	executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
 		}
 		
