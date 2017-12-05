@@ -1,19 +1,33 @@
 node {
+  stage('Reading the variables from the file')
+    {  
+        properties = new Properties()
+        File propertiesFile = new File("../jenkins.properties")
+        properties.load(propertiesFile.newDataInputStream())
+		echo 'Loaded data from the file'
+    }
 	echo "===========================checking out the code==================================================="
-	
-	echo 'Checking out the code'
-   
+	echo 'Checking out the code'   
     stage('checkout') {
 	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
     // some block
 	echo 'checkedout the code'
-	echo "================================================================================================="
+	 File FileContents = new File("../.git/refs/remotes/origin/master")
+	 def Revision_Number=FileContents.text.substring(0,7)
+	 Version_Number=properties.Major_Version+'.'+properties.Minor_Version+'.'+Revision_Number+'.'+env.BUILD_NUMBER
+	 echo "$Version_Number"
+	 executeCommand('mvn -e versions:set -DnewVersion=$Version_Number')
+		//if(isUnix()){
+    		//sh 'mvn -e versions:set -DnewVersion=$Version_Number'
+    	//}
+    	//else{
+			//bat 'mvn -e versions:set -DnewVersion=$Version_Number'
+	//	}
+	 echo "================================================================================================="
 	}
 	
 	stage('clean project'){
 		echo "=============================cleaning the project======================================================="
-		echo "PATH = ${PATH}"
-    	//echo "M2_HOME = ${M2_HOME}"
     	if(isUnix()){
     		echo 'cleaning'
 			sh 'mvn clean'
@@ -101,10 +115,10 @@ node {
 
 	stage("deploy to tomcat"){
 		if(isUnix()){
-    		sh 'ruby sshconn.rb'
+    	//	sh 'ruby sshconn.rb'
     	}
     	else{
-			bat 'ruby sshconn.rb'
+			//bat 'ruby sshconn.rb'
 		}
 		
 	}
@@ -117,9 +131,22 @@ node {
 
 def notifySuccessful() {
    emailext (
-       subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-       body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+       subject: "Project: ${PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${BUILD_STATUS}!",
+       body: """<p>Project: ${PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${BUILD_STATUS}!</p>
          <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
        to: "rajkumar.surabhi640@gmail.com", attachLog: true
      )
  }
+ 
+ def executeCommand(String command){
+	if(isUnix()){
+    		sh command
+    	}
+    	else{
+			bat command
+		}
+ }
+
+ def Version_Number
+ def FilePath1
+ def JarFile
