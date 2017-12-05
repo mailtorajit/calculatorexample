@@ -1,7 +1,7 @@
 node {
-echo env.mavenTest
-echo env
-echo env.qualityGateCheck
+echo '${env.mavenTest}'
+echo '${env}'
+echo '${env.qualityGateCheck}'
     stage('checkout') {
     	echo "===========================checking out the code==================================================="
 	 	git url: 'https://github.com/mailtorajit/calculatorexample.git'
