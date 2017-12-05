@@ -1,67 +1,38 @@
 node {
-  
-	echo "===========================checking out the code==================================================="
-	echo 'Checking out the code'   
     stage('checkout') {
-	 git url: 'https://github.com/mailtorajit/calculatorexample.git'
-    // some block
-	echo 'checkedout the code'
+    	echo "===========================checking out the code==================================================="
+	 	git url: 'https://github.com/mailtorajit/calculatorexample.git'
+		echo 'checkedout the code'
 	}
+	
 	stage('Reading the variables from the file')
-    {   echo "${env.WORKSPACE}"
+    {  
         properties = new Properties()
         File propertiesFile = new File("${env.WORKSPACE}"+"/jenkins.properties")
         properties.load(propertiesFile.newDataInputStream())
 		echo 'Loaded data from the file'
-	 File FileContents = new File("${env.WORKSPACE}"+"/.git/refs/remotes/origin/master")
-	 def Revision_Number=FileContents.text.substring(0,7)
-	 Version_Number=properties.Major_Version+'.'+properties.Minor_Version+'.'+Revision_Number+'.'+env.BUILD_NUMBER+'-SNAPSHOT'
-	 echo "$Version_Number"
-	 executeCommand("mvn -e versions:set -DnewVersion=$Version_Number")
-		//if(isUnix()){
-    		//sh 'mvn -e versions:set -DnewVersion=$Version_Number'
-    	//}
-    	//else{
-			//bat 'mvn -e versions:set -DnewVersion=$Version_Number'
-	//	}
-	 echo "================================================================================================="
+	 	File FileContents = new File("${env.WORKSPACE}"+"/.git/refs/remotes/origin/master")
+	 	def Revision_Number=FileContents.text.substring(0,7)
+	 	Version_Number=properties.Major_Version+'.'+properties.Minor_Version+'.'+Revision_Number+'.'+env.BUILD_NUMBER+'-SNAPSHOT'
+	 	echo "$Version_Number"
+	 	executeCommand("mvn -e versions:set -DnewVersion=$Version_Number")
+	 	echo "================================================================================================="
 	}
 	
 	stage('clean project'){
 		echo "=============================cleaning the project======================================================="
-    	if(isUnix()){
-    		echo 'cleaning'
-			sh 'mvn clean'
-		}
-		else{
-			bat 'mvn clean'
-		}
-			
+		executeCommand("mvn clean")
 		echo "================================================================================================="
 	}
 	stage('compile'){
 		echo "==============================compiling the project================================================="
-		echo "PATH = ${PATH}"
-    	//echo "M2_HOME = ${M2_HOME}"
-    	if(isUnix()){
-    		sh 'mvn compile'
-    	}
-    	else{
-			bat 'mvn compile'
-		}
+		executeCommand("mvn compile")
 		echo "================================================================================================="
 	}
 	
 	stage('test execute'){
 		echo "==============================Exceuting the tests================================================="
-		echo 'inside test'
-		if(isUnix()){
-    		sh 'mvn test -Dmaven.compile.skip=true'
-    	}
-    	else{
-			bat 'mvn test -Dmaven.compile.skip=true'
-		}
-		
+		executeCommand("mvn test -Dmaven.compile.skip=true")
 		echo "================================================================================================="
 	}
 	
@@ -104,24 +75,12 @@ node {
 	
    	stage('deploy') {
     	echo "=========================Deploying the project========================================================"
-    	if(isUnix()){
-    		sh 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
-    	}
-    	else{
-			bat 'mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true'
-		}
-    	
+    	executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
     	echo "================================================================================================="
 	}
 
 	stage("deploy to tomcat"){
-		if(isUnix()){
-    	//	sh 'ruby sshconn.rb'
-    	}
-    	else{
-			//bat 'ruby sshconn.rb'
-		}
-		
+		executeCommand("ruby sshconn.rb")
 	}
 	
 	stage('notify'){
@@ -132,8 +91,8 @@ node {
 
 def notifySuccessful() {
    emailext (
-       subject: "Project: ${env.PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${env.BUILD_STATUS}!",
-       body: """<p>Project: ${env.PROJECT_NAME} - Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]' - - ${env.BUILD_STATUS}!</p>
+       subject: "Jenkins job :: '${env.JOB_NAME} - [${env.BUILD_NUMBER}]'",
+       body: """<p>Project: Job '${env.JOB_NAME} - [${env.BUILD_NUMBER}]'</p>
          <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
        to: "rajkumar.surabhi640@gmail.com", attachLog: true
      )
