@@ -76,14 +76,14 @@ node {
    	stage('deploy') {
     	echo "=========================Deploying the project========================================================"
     	//executeCommand("mvn deploy -Dmaven.compile.skip=true -Dmaven.test.skip=true")
-    	  //This will deploy the artifact to the Nexus Reposiory.
+ 
 	  executeCommand("mvn package")
 	  echo "$Version_Number"
 	  JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
 	  FilePath1="target/"+JarFile
 	  
 	  echo "$FilePath1"
-      bat "curl -v -u $properties.NexUser:$properties.NexPass --upload-file $FilePath1 $properties.NexusRepo/$Version_Number/$JarFile"
+      executeCommand("curl -v -u $properties.NexUser:$properties.NexPass --upload-file $FilePath1 $properties.NexusRepo/$Version_Number/$JarFile")
 	  echo "#####################################Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
       echo "================================================================================================="
 	}
