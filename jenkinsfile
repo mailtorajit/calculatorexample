@@ -1,6 +1,6 @@
 node {
-	echo $mavenCompile
-	echo $mavenDeploy
+	echo params
+	echo params.mavenDeploy
     stage('checkout') {
     	echo "===========================checking out the code==================================================="
 	 	git url: 'https://github.com/mailtorajit/calculatorexample.git'
