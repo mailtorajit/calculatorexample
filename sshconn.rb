@@ -5,7 +5,7 @@ require 'net/scp'
 #gem install net-ssh
 #gem install net-scp
 
-@hostname = "35.201.139.242"
+@hostname = "35.194.172.75"
 @username = "mailtorajuit"
 @cmd = "ls -al"
 @password = "oddTulip@123"
