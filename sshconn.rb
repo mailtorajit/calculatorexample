@@ -19,7 +19,7 @@ begin
     # upload a file to a remote server
     scp.upload! ARGV[0], "/home/mailtorajuit"
   end
-  ssh = Net::SSH.start(@hostname, "mailtorajuit", :host_key=>"ssh-rsa",:keys => [ "/home/rajkumar/.ssh/id_rsa.pub"], :forward_agent=>true)
+  ssh = Net::SSH.start(@hostname, "mailtorajuit", :host_key=>"ssh-rsa",:keys => ["id_rsa.pub"], :forward_agent=>true)
   res = ssh.exec!(@cmd)
   ssh.exec!("sudo cp /home/mailtorajuit/"+ARGV[0]+" /var/lib/tomcat8/webapps/")
   ssh.exec!("sudo service tomcat8 restart")
