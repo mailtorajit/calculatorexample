@@ -15,7 +15,7 @@ begin
   file = "wget -O #{ARGV[0]} #{ARGV[1]}"
   puts file
   system(file)
-  Net::SCP.start(@hostname, "mailtorajuit") do |scp|
+  Net::SCP.start(@hostname, "mailtorajuit", :password => @password) do |scp|
     # upload a file to a remote server
     scp.upload! ARGV[0], "/home/mailtorajuit"
   end
