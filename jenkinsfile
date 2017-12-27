@@ -25,7 +25,7 @@ node {
 	stage('clean project'){
 		try{
 			echo "=============================cleaning the project======================================================="
-			exeuteCommand("mvn clean")	    
+			executeCommand("mvn clean")	    
 		}catch(Exception e){
 		    error "Error while cleaning project " + e.message
 		}
