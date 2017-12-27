@@ -23,42 +23,61 @@ node {
 	}
 	
 	stage('clean project'){
-		echo "=============================cleaning the project======================================================="
-		executeCommand("mvn clean")
-		echo "================================================================================================="
+		try{
+			echo "=============================cleaning the project======================================================="
+			exeuteCommand("mvn clean")	    
+		}catch(Exception e){
+		    error "Error while cleaning project " + e.message
+		}
+		echo "================================================================================================="	
 	}
 	
 	stage('compile'){
 	if(params.mavenCompile){
-		echo "==============================compiling the project================================================="
-		executeCommand("mvn compile")    	
+		try{
+			echo "==============================compiling the project================================================="
+			executeCommand("mvn compile")    	
+			
+		}catch(Exception e){
+		    error "Error while compling the project "+e.message
+		}
 		echo "================================================================================================="
 	}
 	}
 	
 	stage('test execute'){
 	if(params.mavenTest){
-		echo "==============================Exceuting the tests================================================="
-		executeCommand("mvn test -Dmaven.compile.skip=true")		    
+		try{
+			echo "==============================Exceuting the tests================================================="
+			executeCommand("mvn test -Dmaven.compile.skip=true")		    
+			   
+		}catch(Exception e){
+		   error "Error while executing the tests "+e.message  
+		}
 		echo "================================================================================================="
 	}
 	}
 	
 	stage('SonarQube analysis') {
 	    if(params.qualityGateCheck){
-		echo "================================================================================================="
-       	def scannerHome = tool 'My SonarQube Server';
-		//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
-     	withSonarQubeEnv('SonarQube Scanner') {
-     	if(isUnix()){
-    		sh "${scannerHome}/bin/sonar-scanner"
-    	}
-    	else{
-			bat "${scannerHome}/bin/sonar-scanner.bat"
-		}
+	    try{
+		    echo "================================================================================================="
+       		def scannerHome = tool 'My SonarQube Server';
+			//https://blog.sonarsource.com/breaking-the-sonarqube-analysis-with-jenkins-pipelines/
+     		withSonarQubeEnv('SonarQube Scanner') {
+     		if(isUnix()){
+    			sh "${scannerHome}/bin/sonar-scanner"
+    		}
+    		else{
+				bat "${scannerHome}/bin/sonar-scanner.bat"
+			}
         
-        echo "=================================================================================================" 
-    	}
+      	  
+    	 }
+		}catch(Exception e){
+		    error "error while doing sonar analysis "+e.message
+		}
+		echo "=================================================================================================" 
 	}
 	
 	sleep(10)
@@ -86,9 +105,10 @@ node {
 	
    	stage('Upload Artifactory') {
    	if(params.mavenDeploy){
-    	echo "=========================Deploying the project========================================================"
+   	 	try{
+   	 	   echo "=========================Deploying the project========================================================"
     	
- 		executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
+ 			executeCommand("mvn package -Dmaven.compile.skip=true -Dmaven.test.skip=true")
 	  	echo "$Version_Number"
 	  	JarFile="calculator-unit-test-example-java-"+Version_Number+".jar"
 	  	FilePath1="target/"+JarFile
@@ -97,16 +117,22 @@ node {
       	executeCommand("curl -v -u $properties.NexUser:$nexusPass --upload-file $FilePath1 $properties.NexusRepo$Version_Number/$JarFile")
  		//executeCommand("mvn deploy")
 	  	echo "##################################### Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
-      	echo "================================================================================================="
+      	
+   	 	}catch(Exception e){
+   	 	    error "Error while uploading artifacts" + e.message
+   	 	}
+   	 	echo "================================================================================================="
 	}
 
 	stage("Deploy the project to tomcat"){
+		echo "################################ Deploying to tomcat ########################################"
 		try{
 		    executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
-		}catch(Exception e){
+		}catch(Exception e){	   
 		   echo "Deployment to tomcat failed with reason "+e.message
 		   error e.message 
 		}
+		echo "################################ Deployed to tomcat successfully ########################################"
 	  }
 	}
 	stage('notify'){
