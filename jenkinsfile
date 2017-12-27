@@ -101,8 +101,12 @@ node {
 	}
 
 	stage("Deploy the project to tomcat"){
-	  	executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
-	}
+		try{
+		    executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
+		}catch(Exception e){
+		   error e.message 
+		}
+	  }
 	}
 	stage('notify'){
 	 notifySuccessful();

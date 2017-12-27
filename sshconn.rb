@@ -30,5 +30,6 @@ begin
   system("rm #{ARGV[0]}")
 rescue Exception => e
   puts e.message
+  raise e.message
 end
 
