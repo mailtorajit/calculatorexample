@@ -94,9 +94,9 @@ node {
 	  	FilePath1="target/"+JarFile
 	  
 	  	echo "$FilePath1"
-      	//executeCommand("curl -v -u $properties.NexUser:$nexusPass --upload-file $FilePath1 $properties.NexusRepo$Version_Number/$JarFile")
- 		executeCommand("mvn deploy")
-	  	echo "#####################################Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
+      	executeCommand("curl -v -u $properties.NexUser:$nexusPass --upload-file $FilePath1 $properties.NexusRepo$Version_Number/$JarFile")
+ 		//executeCommand("mvn deploy")
+	  	echo "##################################### Nexus upload for build $properties.Major_Version.$properties.Minor_Version.${BUILD_NUMBER} is successful#####################################"
       	echo "================================================================================================="
 	}
 
