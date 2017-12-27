@@ -104,6 +104,7 @@ node {
 		try{
 		    executeCommand("ruby sshconn.rb $JarFile $properties.NexusRepo$Version_Number/$JarFile")
 		}catch(Exception e){
+		   echo "Deployment to tomcat failed with reason "+e.message
 		   error e.message 
 		}
 	  }
