@@ -5,7 +5,7 @@ require 'net/scp'
 #gem install net-ssh
 #gem install net-scp
 
-@hostname = "35.194.233.140"
+@hostname = "104.199.221.116"
 @username = "mailtorajuit"
 @cmd = "ls -al"
 @password = "oddTulip@123"
@@ -16,7 +16,7 @@ begin
   puts file
   system(file)
   puts "FIle downloaded using wget"
-  Net::SCP.start("35.194.233.140", "mailtorajuit", :password => "oddTulip@123") do |scp|
+  Net::SCP.start("104.199.221.116", "mailtorajuit", :password => "oddTulip@123") do |scp|
     # upload a file to a remote server
     scp.upload! ARGV[0], "/home/mailtorajuit"
   end
